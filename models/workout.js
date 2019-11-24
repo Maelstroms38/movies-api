@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       onDelete: 'CASCADE'
     });
+    Workout.hasMany(models.Vote, {
+      foreignKey: 'userId',
+      as: 'votes',
+    });
   };
   return Workout;
 };

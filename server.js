@@ -9,12 +9,13 @@ const jwt = require('jsonwebtoken');
 
 const PORT = process.env.PORT || 3000;
 
-const { User, Workout, sequelize } = require('./models');
+const { User, Workout, Vote, sequelize } = require('./models');
 const APP_SECRET = 'React-Native-GraphQL';
 
 const typeDefs = gql`
   type Query {
     currentUser: User
+    feed: [Workout!]!
   }
   type Mutation {
     signUp(email: String!, password: String!, username: String!): AuthPayload
@@ -22,6 +23,8 @@ const typeDefs = gql`
     addPost(title: String!, description: String!): Workout!
     editPost(id: Int!, title: String!, description: String!): Workout!
     deletePost(id: Int!): Int
+    addVote(workoutId: Int!): Int
+    removeVote(workoutId: Int!): Int
   }
   type AuthPayload {
     token: String
@@ -32,12 +35,19 @@ const typeDefs = gql`
     username: String!
     email: String!
     workouts: [Workout!]!
+    votes: [Vote!]!
   }
   type Workout {
     id: ID!
     title: String!
     description: String!
     userId: Int!
+    votes: [Vote!]!
+  }
+  type Vote {
+    id: ID!
+    workoutId: ID!
+    userId: ID!
   }
 `;
 
@@ -46,11 +56,29 @@ const resolvers = {
     currentUser: async (_, args, context) => {
       const userId = getUserId(context);
       if (userId) {
-        const user = await User.findOne({ where: { id: userId } });
-        const workouts = await Workout.findAll({ where: { userId } });
-        user.workouts = workouts;
+        const user = await User.findOne({ 
+          where: { id: userId },
+          include: [
+            {
+              model: Workout,
+              as: 'workouts',
+            }
+          ] 
+        });
         return user;
       }
+    },
+    feed: async (_, args, context) => {
+      const workouts = await Workout.findAll({ 
+        where: {}, 
+        include: [
+          {
+            model: Vote,
+            as: 'votes',
+          }
+        ]
+      });
+      return workouts;
     }
   },
   Mutation: {
@@ -145,6 +173,47 @@ const resolvers = {
         return new Error('Workout not deleted');
       }
       return new Error('Not authorized');
+    },
+    addVote: async (_, { workoutId }, context) => {
+      const userId = getUserId(context);
+      if (userId) {
+        const user = await User.findOne({
+          where: { id: userId }, 
+          include: [
+            { 
+              model: Vote, 
+              as: 'votes'
+            },
+            { 
+              model: Workout,
+              as: 'workouts'
+            }
+          ]
+        });
+        if (user.votes.find(vote => vote.userId == userId)) {
+          return new Error('Cannot vote twice');
+        }
+        if (user.workouts.find(workout => workout.id == workoutId)) {
+          return new Error('Cannot vote on your own workouts');
+        }
+        const newVote = await Vote.create({userId, workoutId});
+        return newVote.id;
+      }
+      return new Error('Not authorized');
+    },
+    removeVote: async (_, { workoutId }, context) => {
+      const userId = getUserId(context);
+      const vote = await Vote.findOne({ where: { workoutId } });
+      if (userId && vote && userId == vote.userId) {
+        const deleted = await Vote.destroy({
+          where: { userId, workoutId }
+        });
+        if (deleted) {
+          return 'Removed Vote';
+        }
+        return new Error('Not authorized');
+      }
+      return new Error('Vote not found');
     }
   }
 };
