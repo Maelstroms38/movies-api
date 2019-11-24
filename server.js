@@ -56,25 +56,25 @@ const resolvers = {
     currentUser: async (_, args, context) => {
       const userId = getUserId(context);
       if (userId) {
-        const user = await User.findOne({ 
+        const user = await User.findOne({
           where: { id: userId },
           include: [
             {
               model: Workout,
-              as: 'workouts',
+              as: 'workouts'
             }
-          ] 
+          ]
         });
         return user;
       }
     },
     feed: async (_, args, context) => {
-      const workouts = await Workout.findAll({ 
-        where: {}, 
+      const workouts = await Workout.findAll({
+        where: {},
         include: [
           {
             model: Vote,
-            as: 'votes',
+            as: 'votes'
           }
         ]
       });
@@ -99,7 +99,7 @@ const resolvers = {
         const token = jwt.sign(payload, APP_SECRET);
         return { user, token };
       } catch (err) {
-        return new Error(err.message);
+        throw new Error(err.message);
       }
     },
     signIn: async (_, { username, email, password }) => {
@@ -127,11 +127,11 @@ const resolvers = {
             const token = jwt.sign(payload, APP_SECRET);
             return { user, token };
           }
-          return new Error('Invalid credentials');
+          throw new Error('Invalid credentials');
         }
-        return new Error('Invalid credentials');
+        throw new Error('Invalid credentials');
       } catch (err) {
-        return new Error(err.message);
+        throw new Error(err.message);
       }
     },
     addPost: async (_, { title, description }, context) => {
@@ -140,7 +140,7 @@ const resolvers = {
         const project = await Workout.create({ title, description, userId });
         return project;
       }
-      return new Error('Not authorized');
+      throw new Error('Not authorized');
     },
     editPost: async (_, { id, title, description }, context) => {
       const userId = getUserId(context);
@@ -156,9 +156,9 @@ const resolvers = {
           const updatedPost = await Workout.findOne({ where: { id: id } });
           return updatedPost;
         }
-        return new Error('Workout not updated');
+        throw new Error('Workout not updated');
       }
-      return new Error('Not authorized');
+      throw new Error('Not authorized');
     },
     deletePost: async (_, { id }, context) => {
       const userId = getUserId(context);
@@ -170,36 +170,36 @@ const resolvers = {
         if (deleted) {
           return id;
         }
-        return new Error('Workout not deleted');
+        throw new Error('Workout not deleted');
       }
-      return new Error('Not authorized');
+      throw new Error('Not authorized');
     },
     addVote: async (_, { workoutId }, context) => {
       const userId = getUserId(context);
       if (userId) {
         const user = await User.findOne({
-          where: { id: userId }, 
+          where: { id: userId },
           include: [
-            { 
-              model: Vote, 
+            {
+              model: Vote,
               as: 'votes'
             },
-            { 
+            {
               model: Workout,
               as: 'workouts'
             }
           ]
         });
         if (user.votes.find(vote => vote.userId == userId)) {
-          return new Error('Cannot vote twice');
+          throw new Error('Cannot vote twice');
         }
         if (user.workouts.find(workout => workout.id == workoutId)) {
-          return new Error('Cannot vote on your own workouts');
+          throw new Error('Cannot vote on your own workouts');
         }
-        const newVote = await Vote.create({userId, workoutId});
+        const newVote = await Vote.create({ userId, workoutId });
         return newVote.id;
       }
-      return new Error('Not authorized');
+      throw new Error('Not authorized');
     },
     removeVote: async (_, { workoutId }, context) => {
       const userId = getUserId(context);
@@ -211,9 +211,9 @@ const resolvers = {
         if (deleted) {
           return 'Removed Vote';
         }
-        return new Error('Not authorized');
+        throw new Error('Not authorized');
       }
-      return new Error('Vote not found');
+      throw new Error('Vote not found');
     }
   }
 };
@@ -227,7 +227,7 @@ function getUserId(context) {
       return user.id;
     }
   } catch (err) {
-    return new Error('Not authenticated');
+    throw new Error('Not authenticated');
   }
 }
 
