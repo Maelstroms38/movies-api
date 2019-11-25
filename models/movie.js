@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     Movie.hasMany(models.Vote, {
       foreignKey: 'movieId',
-      as: 'votes'
+      as: 'votes',
     });
     Movie.belongsTo(models.Category, {
       foreignKey: 'categoryId',
-      as: 'movies'
+      as: 'category',
     });
   };
   return Movie;

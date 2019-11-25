@@ -9,7 +9,14 @@ const feed = async (_, args, context) => {
       {
         model: Vote,
         as: 'votes', 
-        include: [User]
+        include: [{
+          model: User,
+          as: 'user',
+        }]
+      },
+      { 
+        model: Category,
+        as: 'category'
       }
     ]
   });
@@ -32,7 +39,10 @@ const currentUser = async (_, args, context) => {
         {
           model: Vote,
           as: 'votes',
-          include: [Movie]
+          include: [{
+            model: Movie,
+            as: 'movie',
+          }]
         },
       ]
     });

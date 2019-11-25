@@ -42,14 +42,14 @@ const typeDefs = gql`
     id: ID!
     title: String!
     description: String!
-    categoryId: Int!
+    category: Category
     imageUrl: String!
     votes: [Vote!]!
   }
   type Vote {
     id: ID!
-    Movie: Movie
-    User: User
+    movie: Movie
+    user: User
   }
 `;
 
