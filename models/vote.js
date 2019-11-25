@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Vote = sequelize.define('Vote', {
     userId: DataTypes.INTEGER,
-    workoutId: DataTypes.INTEGER
+    movieId: DataTypes.INTEGER
   }, {});
   Vote.associate = function(models) {
     // associations can be defined here
@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'userId',
       onDelete: 'CASCADE'
     });
-    Vote.belongsTo(models.Workout, {
-      foreignKey: 'workoutId',
-      onDelete: 'CASCADE'
+    Vote.belongsTo(models.Movie, {
+      foreignKey: 'movieId',
+      onDelete: 'CASCADE',
     });
   };
   return Vote;

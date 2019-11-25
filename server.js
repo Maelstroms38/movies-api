@@ -9,22 +9,19 @@ const Query = require('./resolvers/Query');
 
 const PORT = process.env.PORT || 3000;
 
-const { User, Workout, Vote, sequelize } = require('./models');
-const APP_SECRET = 'React-Native-GraphQL';
+const { User, Movie, Vote, sequelize } = require('./models');
 
 const typeDefs = gql`
   type Query {
     currentUser: User
-    feed: [Workout!]!
+    feed(categoryId: Int): [Movie!]!
+    categories: [Category!]!
   }
   type Mutation {
     signUp(email: String!, password: String!, username: String!): AuthPayload
     signIn(email: String, username: String, password: String!): AuthPayload
-    addWorkout(title: String!, description: String!): Workout!
-    editWorkout(id: Int!, title: String!, description: String!): Workout!
-    deleteWorkout(id: Int!): Int
-    addVote(workoutId: Int!): Int
-    removeVote(workoutId: Int!): Int
+    addVote(movieId: Int!): Int
+    removeVote(movieId: Int!): Int
   }
   type AuthPayload {
     token: String
@@ -34,20 +31,25 @@ const typeDefs = gql`
     id: ID!
     username: String!
     email: String!
-    workouts: [Workout!]!
     votes: [Vote!]!
   }
-  type Workout {
+  type Category {
+    id: ID!
+    title: String!
+    description: String
+  }
+  type Movie {
     id: ID!
     title: String!
     description: String!
-    userId: Int!
+    categoryId: Int!
+    imageUrl: String!
     votes: [Vote!]!
   }
   type Vote {
     id: ID!
-    workoutId: ID!
-    userId: ID!
+    Movie: Movie
+    User: User
   }
 `;
 

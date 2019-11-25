@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const APP_SECRET = 'React-Native-GraphQL';
+
 function getUserId(context) {
   const authorization = context.req.headers['authorization'];
   try {
@@ -7,10 +10,11 @@ function getUserId(context) {
       return user.id;
     }
   } catch (err) {
-    throw new Error('Not authenticated');
+    throw new Error(err.message);
   }
 }
 
 module.exports = {
   getUserId,
+  APP_SECRET,
 }

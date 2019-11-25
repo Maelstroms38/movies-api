@@ -1,10 +1,10 @@
 {
   "development": {
-    "database": "fitness_api_development",
+    "database": "movies_api_development",
     "dialect": "postgres"
   },
   "test": {
-    "database": "fitness_api_test",
+    "database": "movies_api_test",
     "dialect": "postgres"
   },
   "production": {

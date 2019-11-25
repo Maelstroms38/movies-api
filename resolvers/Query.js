@@ -1,17 +1,26 @@
-const { User, Workout, Vote, sequelize } = require('../models');
+const { User, Category, Movie, Vote, sequelize } = require('../models');
 const { getUserId } = require('../utils');
 
 const feed = async (_, args, context) => {
-  const workouts = await Workout.findAll({
-    where: {},
+  const {categoryId} = args;
+  const movies = await Movie.findAll({
+    where: categoryId ? {categoryId} : {},
     include: [
       {
         model: Vote,
-        as: 'votes'
+        as: 'votes', 
+        include: [User]
       }
     ]
   });
-  return workouts;
+  return movies;
+};
+
+const categories = async (_, args, context) => {
+  const categories = await Category.findAll({
+    where: {},
+  });
+  return categories;
 };
 
 const currentUser = async (_, args, context) => {
@@ -21,9 +30,10 @@ const currentUser = async (_, args, context) => {
       where: { id: userId },
       include: [
         {
-          model: Workout,
-          as: 'workouts'
-        }
+          model: Vote,
+          as: 'votes',
+          include: [Movie]
+        },
       ]
     });
     return user;
@@ -32,5 +42,6 @@ const currentUser = async (_, args, context) => {
 
 module.exports = {
   feed,
-  currentUser
+  categories,
+  currentUser,
 }

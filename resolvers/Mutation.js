@@ -1,5 +1,5 @@
-const { User, Workout, Vote, sequelize } = require('../models');
-const { getUserId } = require('../utils');
+const { User, Movie, Vote, sequelize } = require('../models');
+const { getUserId, APP_SECRET } = require('../utils');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -57,50 +57,7 @@ const signIn = async (_, { username, email, password }) => {
   }
 };
 
-const addWorkout = async (_, { title, description }, context) => {
-  const userId = getUserId(context);
-  if (userId) {
-    const project = await Workout.create({ title, description, userId });
-    return project;
-  }
-  throw new Error('Not authorized');
-};
-
-const editWorkout = async (_, { id, title, description }, context) => {
-  const userId = getUserId(context);
-  const workout = await Workout.findOne({ where: { id: id } });
-  if (userId && userId == workout.userId) {
-    const [updated] = await Workout.update(
-      { title, description },
-      {
-        where: { id: id }
-      }
-    );
-    if (updated) {
-      const updatedPost = await Workout.findOne({ where: { id: id } });
-      return updatedPost;
-    }
-    throw new Error('Workout not updated');
-  }
-  throw new Error('Not authorized');
-};
-
-const deleteWorkout = async (_, { id }, context) => {
-  const userId = getUserId(context);
-  const workout = await Workout.findOne({ where: { id: id } });
-  if (userId && userId == workout.userId) {
-    const deleted = await Workout.destroy({
-      where: { id: id }
-    });
-    if (deleted) {
-      return id;
-    }
-    throw new Error('Workout not deleted');
-  }
-  throw new Error('Not authorized');
-};
-
-const addVote = async (_, { workoutId }, context) => {
+const addVote = async (_, { movieId }, context) => {
   const userId = getUserId(context);
   if (userId) {
     const user = await User.findOne({
@@ -109,34 +66,25 @@ const addVote = async (_, { workoutId }, context) => {
         {
           model: Vote,
           as: 'votes'
-        },
-        {
-          model: Workout,
-          as: 'workouts'
         }
       ]
     });
-    if (user.votes.find(vote => vote.userId == userId)) {
+    if (user.votes.find(vote => vote.movieId == movieId)) {
       throw new Error('Cannot vote twice');
     }
-    if (user.workouts.find(workout => workout.id == workoutId)) {
-      throw new Error('Cannot vote on your own workouts');
-    }
-    const newVote = await Vote.create({ userId, workoutId });
+    const newVote = await Vote.create({ userId, movieId });
     return newVote.id;
   }
   throw new Error('Not authorized');
 };
 
-const removeVote = async (_, { workoutId }, context) => {
+const removeVote = async (_, { movieId }, context) => {
   const userId = getUserId(context);
-  const vote = await Vote.findOne({ where: { workoutId } });
+  const vote = await Vote.findOne({ where: { userId, movieId } });
   if (userId && vote && userId == vote.userId) {
-    const deleted = await Vote.destroy({
-      where: { userId, workoutId }
-    });
+    const deleted = await vote.destroy();
     if (deleted) {
-      return 'Removed Vote';
+      return vote.id;
     }
     throw new Error('Not authorized');
   }
@@ -147,9 +95,6 @@ const removeVote = async (_, { workoutId }, context) => {
 module.exports = {
   signUp,
   signIn,
-  addWorkout,
-  editWorkout,
-  deleteWorkout,
   addVote,
   removeVote
 }
