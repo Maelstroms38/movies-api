@@ -14,14 +14,14 @@ const { User, Movie, Vote, sequelize } = require('./models');
 const typeDefs = gql`
   type Query {
     currentUser: User
-    feed(categoryId: Int): [Movie!]!
+    feed(categoryId: ID): [Movie!]!
     categories: [Category!]!
   }
   type Mutation {
     signUp(email: String!, password: String!, username: String!): AuthPayload
     signIn(email: String, username: String, password: String!): AuthPayload
-    addVote(movieId: Int!): Int
-    removeVote(movieId: Int!): Int
+    addVote(movieId: ID!): ID
+    removeVote(movieId: ID!): ID
   }
   type AuthPayload {
     token: String
