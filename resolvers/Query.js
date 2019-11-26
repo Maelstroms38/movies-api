@@ -42,6 +42,10 @@ const currentUser = async (_, args, context) => {
           include: [{
             model: Movie,
             as: 'movie',
+            include: [{
+              model: Category,
+              as: 'category',
+            }]
           }]
         },
       ]
