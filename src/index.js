@@ -1,6 +1,5 @@
 const { GraphQLServer } = require('graphql-yoga');
-const Mutation = require('../resolvers/Mutation');
-const Query = require('../resolvers/Query');
+const resolvers = require('../resolvers')
 
 const { User, Movie, Vote, sequelize } = require('../models');
 
@@ -45,11 +44,6 @@ const typeDefs = `
     user: User
   }
 `;
-
-const resolvers = {
-  Query,
-  Mutation,
-};
 
 const server = new GraphQLServer({
   typeDefs,

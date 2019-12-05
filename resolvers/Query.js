@@ -1,5 +1,5 @@
 const { User, Category, Movie, Vote, sequelize } = require('../models');
-const { getUserId } = require('../utils');
+const { getUserId } = require('./utils');
 
 const feed = async (_, args, context) => {
   const {categoryId} = args;
