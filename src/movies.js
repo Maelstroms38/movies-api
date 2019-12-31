@@ -10,7 +10,7 @@ const resolvers = require('../resolvers');
 const port = process.env.PORT || 4001;
 
 const typeDefs = gql`
-  extend type Query {
+  type Query {
     currentUser: User
     feed(categoryId: ID): [Movie!]!
     categories: [Category!]!

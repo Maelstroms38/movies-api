@@ -10,7 +10,8 @@
     "start-posts": "node src/posts.js",
     "dev": "nodemon src/gateway.js",
     "dev-movies": "nodemon src/movies.js",
-    "dev-posts": "nodemon src/posts.js"
+    "dev-posts": "nodemon src/posts.js",
+    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",

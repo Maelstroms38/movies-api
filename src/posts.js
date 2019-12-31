@@ -15,11 +15,15 @@ const typeDefs = gql`
     link: String!
     imageUrl: String
     id: ID!
+    user: User @provides(fields: "id")
   }
-  extend type Query {
+  extend type User @key(fields: "id") {
+    id: ID! @external
+  }
+  type Query {
     posts: [Post]
   }
-  extend type Mutation {
+  type Mutation {
     addPost(title: String!, link: String!, imageUrl: String!): ID
     editPost(id: ID!, title: String!, link: String!, imageUrl: String!): Post
     deletePost(id: ID!): ID

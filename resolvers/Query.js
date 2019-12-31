@@ -3,7 +3,9 @@ const { Posts } = require('../models');
 const { getUserId } = require('./utils');
 
 const posts = async () => {
-  const posts = await Posts.findAll({ order: [['id', 'DESC']] });
+  const posts = await Posts.findAll({ 
+     order: [['id', 'DESC']],
+  });
   return posts;
 };
 
@@ -59,6 +61,10 @@ const currentUser = async (_, args, context) => {
               ]
             }
           ]
+        },
+        {
+          model: Posts,
+          as: 'posts'
         }
       ]
     });
