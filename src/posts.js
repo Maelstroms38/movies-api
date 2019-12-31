@@ -15,7 +15,7 @@ const typeDefs = gql`
     link: String!
     imageUrl: String
     id: ID!
-    user: User @provides(fields: "id")
+    author: User @provides(fields: "id")
   }
   extend type User @key(fields: "id") {
     id: ID! @external
