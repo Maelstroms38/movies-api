@@ -2,16 +2,23 @@
   "name": "movies-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "gateway.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node src/gateway.js",
+    "start-movies": "node src/movies.js",
+    "start-posts": "node src/posts.js",
+    "dev": "nodemon src/gateway.js",
+    "dev-movies": "nodemon src/movies.js",
+    "dev-posts": "nodemon src/posts.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo/federation": "^0.11.2",
+    "@apollo/gateway": "^0.11.6",
+    "apollo-server": "^2.9.15",
     "apollo-server-express": "^2.9.14",
     "bcrypt": "^3.0.7",
     "body-parser": "^1.19.0",

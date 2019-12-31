@@ -1,18 +1,16 @@
 const { ApolloServer, gql } = require('apollo-server-express');
+const { buildFederatedSchema } = require("@apollo/federation");
 const { createServer } = require('http');
-const { makeExecutableSchema } = require('graphql-tools');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const resolvers = require('../resolvers');
 
-const { User, Movie, Vote, sequelize } = require('../models');
-
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4001;
 
 const typeDefs = gql`
-  type Query {
+  extend type Query {
     currentUser: User
     feed(categoryId: ID): [Movie!]!
     categories: [Category!]!
@@ -27,7 +25,7 @@ const typeDefs = gql`
     token: String
     user: User
   }
-  type User {
+  type User @key(fields: "id") {
     id: ID!
     username: String!
     email: String!
@@ -53,10 +51,10 @@ const typeDefs = gql`
   }
 `;
 
-const schema = makeExecutableSchema({
+const schema = buildFederatedSchema([{
   typeDefs,
   resolvers
-});
+}]);
 
 const apolloServer = new ApolloServer({
   schema,

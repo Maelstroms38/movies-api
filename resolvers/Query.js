@@ -1,5 +1,11 @@
 const { User, Category, Movie, Vote, sequelize } = require('../models');
+const { Posts } = require('../models');
 const { getUserId } = require('./utils');
+
+const posts = async () => {
+  const posts = await Posts.findAll({ order: [['id', 'DESC']] });
+  return posts;
+};
 
 const feed = async (_, args, context) => {
   const { categoryId } = args;
@@ -63,5 +69,6 @@ const currentUser = async (_, args, context) => {
 module.exports = {
   feed,
   categories,
-  currentUser
+  currentUser,
+  posts
 };
