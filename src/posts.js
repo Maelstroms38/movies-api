@@ -42,7 +42,7 @@ const apolloServer = new ApolloServer({
       ...request,
     };
   },
-  introspection: true,
+  introspection: false,
   playground: {
     endpoint: '/graphql'
   }

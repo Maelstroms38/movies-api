@@ -11,6 +11,7 @@
     "dev": "nodemon src/gateway.js",
     "dev-movies": "nodemon src/movies.js",
     "dev-posts": "nodemon src/posts.js",
+    "heroku-postbuild": "yarn start-movies && yarn start-posts && yarn start",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "keywords": [],
