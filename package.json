@@ -13,7 +13,8 @@
     "dev-service-movies": "nodemon src/movies.js",
     "dev-service-posts": "nodemon src/posts.js",
     "dev-gateway": "nodemon src/gateway.js",
-    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
+    "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "heroku-postbuild": "yarn start"
   },
   "keywords": [],
   "author": "",
