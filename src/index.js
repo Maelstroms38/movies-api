@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server-express');
-const { buildFederatedSchema } = require("@apollo/federation");
+const { buildExecutableSchema } = require("graphl-tools");
 const { createServer } = require('http');
 const express = require('express');
 const cors = require('cors');
@@ -62,10 +62,10 @@ const typeDefs = gql`
   }
 `;
 
-const schema = buildFederatedSchema([{
+const schema = buildExecutableSchema({
   typeDefs,
   resolvers
-}]);
+});
 
 const apolloServer = new ApolloServer({
   schema,
