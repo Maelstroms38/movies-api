@@ -11,8 +11,8 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
 
 const gateway = new ApolloGateway({
   serviceList: [
-    { name: "movies", url: "https://graphql-gateway.herokuapp.com:4001/graphql" },
-    { name: "posts", url: "https://graphql-gateway.herokuapp.com:4002/graphql" },
+    { name: "movies", url: "http://localhost:4001/graphql" },
+    { name: "posts", url: "http://localhost:4002/graphql" },
   ],
   buildService({ name, url }) {
     return new AuthenticatedDataSource({ url });
