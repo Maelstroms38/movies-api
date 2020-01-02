@@ -5,14 +5,14 @@
   "main": "gateway.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/gateway.js",
+    "start": "concurrently \"yarn:start-service-*\" \"wait-on . -d 200 && yarn start-gateway\"",
     "start-service-movies": "node src/movies.js",
     "start-service-posts": "node src/posts.js",
-    "start-services": "concurrently \"yarn:start-service-*\" \"wait-on . -d 200 && yarn start\"",
-    "dev": "nodemon src/gateway.js",
+    "start-gateway": "node src/gateway.js",
+    "dev": "concurrently \"yarn:dev-service-*\" \"wait-on . -d 200 && yarn dev-gateway\"",
     "dev-service-movies": "nodemon src/movies.js",
     "dev-service-posts": "nodemon src/posts.js",
-    "dev-services": "concurrently \"yarn:dev-service-*\" \"wait-on . -d 200 && yarn dev\"",
+    "dev-gateway": "nodemon src/gateway.js",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "heroku-postbuild": "yarn start-services"
   },

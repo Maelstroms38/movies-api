@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 
 const resolvers = require('../resolvers');
 
-const port = process.env.PORT || 4002;
+const port = 4002;
 
 const typeDefs = gql`
   type Post @key(fields: "id") {
