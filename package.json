@@ -5,22 +5,14 @@
   "main": "gateway.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"yarn:start-service-*\" \"wait-on . -d 200 && yarn start-gateway\"",
-    "start-service-movies": "node src/movies.js",
-    "start-service-posts": "node src/posts.js",
-    "start-gateway": "node src/gateway.js",
-    "dev": "concurrently \"yarn:dev-service-*\" \"wait-on . -d 200 && yarn dev-gateway\"",
-    "dev-service-movies": "nodemon src/movies.js",
-    "dev-service-posts": "nodemon src/posts.js",
-    "dev-gateway": "nodemon src/gateway.js",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/federation": "^0.11.2",
-    "@apollo/gateway": "^0.11.6",
     "apollo-server": "^2.9.15",
     "apollo-server-express": "^2.9.14",
     "bcrypt": "^3.0.7",
@@ -34,9 +26,7 @@
     "sequelize": "^5.21.3"
   },
   "devDependencies": {
-    "concurrently": "^5.0.2",
     "nodemon": "^2.0.2",
-    "sequelize-cli": "^5.5.1",
-    "wait-on": "^3.3.0"
+    "sequelize-cli": "^5.5.1"
   }
 }

@@ -7,25 +7,29 @@ const bodyParser = require('body-parser');
 
 const resolvers = require('../resolvers');
 
-const port = 4001;
+const port = process.env.PORT || 4000;
 
 const typeDefs = gql`
   type Query {
     currentUser: User
     feed(categoryId: ID): [Movie!]!
     categories: [Category!]!
+    posts: [Post]
   }
   type Mutation {
     signUp(email: String!, password: String!, username: String!): AuthPayload
     signIn(email: String, username: String, password: String!): AuthPayload
     addVote(movieId: ID!): ID
     removeVote(movieId: ID!): ID
+    addPost(title: String!, link: String!, imageUrl: String!): ID
+    editPost(id: ID!, title: String!, link: String!, imageUrl: String!): Post
+    deletePost(id: ID!): ID
   }
   type AuthPayload {
     token: String
     user: User
   }
-  type User @key(fields: "id") {
+  type User {
     id: ID!
     username: String!
     email: String!
@@ -49,6 +53,13 @@ const typeDefs = gql`
     movie: Movie
     user: User
   }
+  type Post {
+    title: String!
+    link: String!
+    imageUrl: String
+    id: ID!
+    author: User
+  }
 `;
 
 const schema = buildFederatedSchema([{
@@ -63,7 +74,7 @@ const apolloServer = new ApolloServer({
       ...request
     };
   },
-  introspection: false,
+  introspection: true,
   playground: {
     endpoint: '/graphql'
   }
