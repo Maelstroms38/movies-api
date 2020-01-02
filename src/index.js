@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server-express');
-const { buildExecutableSchema } = require("graphl-tools");
+const { buildExecutableSchema } = require("graphql-tools");
 const { createServer } = require('http');
 const express = require('express');
 const cors = require('cors');
