@@ -1,9 +1,9 @@
 const { User, Category, Movie, Vote, sequelize } = require('../models');
-const { Posts } = require('../models');
+const { Post } = require('../models');
 const { getUserId } = require('./utils');
 
 const posts = async () => {
-  const posts = await Posts.findAll({ 
+  const posts = await Post.findAll({ 
      order: [['id', 'DESC']],
   });
   return posts;
@@ -63,7 +63,7 @@ const currentUser = async (_, args, context) => {
           ]
         },
         {
-          model: Posts,
+          model: Post,
           as: 'posts'
         }
       ]

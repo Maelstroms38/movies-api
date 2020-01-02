@@ -1,9 +1,12 @@
 const { ApolloServer, gql } = require('apollo-server-express');
 const { makeExecutableSchema } = require("graphql-tools");
+const { SubscriptionServer } = require('subscriptions-transport-ws');
+const { execute, subscribe } = require('graphql');
 const { createServer } = require('http');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { pubSub } = require('./pubSub');
 
 const resolvers = require('../resolvers');
 
@@ -24,6 +27,11 @@ const typeDefs = gql`
     addPost(title: String!, link: String!, imageUrl: String!): ID
     editPost(id: ID!, title: String!, link: String!, imageUrl: String!): Post
     deletePost(id: ID!): ID
+  }
+  type Subscription {
+    postAdded: Post
+    postEdited: Post
+    postDeleted: ID
   }
   type AuthPayload {
     token: String
@@ -71,7 +79,8 @@ const apolloServer = new ApolloServer({
   schema,
   context: request => {
     return {
-      ...request
+      ...request,
+      pubSub
     };
   },
   introspection: true,
@@ -87,6 +96,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-server.listen({ port }, () =>
-  console.log(`Server is running at http://localhost:${port}/graphql`)
-);
+server.listen({ port }, () => {
+  console.log(`Server is running at http://localhost:${port}/graphql`);
+  new SubscriptionServer(
+    {
+      schema,
+      execute,
+      subscribe,
+      keepAlive: 10000
+    },
+    {
+      server: server
+    }
+  );
+});
