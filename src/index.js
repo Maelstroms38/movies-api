@@ -42,6 +42,7 @@ const typeDefs = gql`
     username: String!
     email: String!
     votes: [Vote!]!
+    posts: [Post]
   }
   type Category {
     id: ID!
