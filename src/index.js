@@ -1,4 +1,10 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer, gql } = require('apollo-server-express');
+const { createServer } = require('http');
+const { makeExecutableSchema } = require('graphql-tools');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
 const resolvers = require('../resolvers')
 
 const { User, Movie, Vote, sequelize } = require('../models');
@@ -47,14 +53,29 @@ const typeDefs = gql`
   }
 `;
 
-const server = new ApolloServer({
+const schema = makeExecutableSchema({
   typeDefs,
-  resolvers,
+  resolvers
+});
+
+const server = new ApolloServer({
+  schema,
   context: request => {
     return {
       ...request
     };
   },
+  introspection: true,
+  playground: {
+    endpoint: '/graphql'
+  }
 });
+
+const app = express();
+const server = createServer(app);
+apolloServer.applyMiddleware({ app });
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cors());
 
 server.listen({port}, () => console.log(`Server is running at http://localhost:${port}`))

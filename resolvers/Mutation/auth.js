@@ -25,7 +25,7 @@ const auth = {
     }
   },
 
-  async signUp(_, { username, email, password }) {
+  async signIn(_, { username, email, password }) {
     try {
       if (username || email) {
         const user = username
