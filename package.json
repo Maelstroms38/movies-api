@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server": "latest",
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "graphql": "latest",
     "jsonwebtoken": "^8.5.1",
     "pg": "^7.14.0",
